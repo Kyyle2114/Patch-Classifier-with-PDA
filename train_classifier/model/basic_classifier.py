@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torchvision.models as models
 
-from dropout_attention import PDA
+from .dropout_attention import PDA
 
 class BasicClassifier(nn.Module):
     def __init__(self, 
