@@ -16,25 +16,30 @@ class PDA(nn.Module):
                 fc_weights: torch.Tensor, 
                 mu: float) -> torch.Tensor:
         
-        fc_weights = fc_weights.view(1, -1, 1, 1)
-        cams = x * fc_weights
-        cams = F.relu(cams)
+        # K: total number of category(class) 
+        # N: batch size 
+        K, _ = fc_weights.size()
+        N, _, H, W = x.size()
         
-        N, C, _, _ = cams.size()
-        cam_mean = torch.mean(cams, dim=1)
-        
-        zero = torch.zeros_like(cam_mean)        
+        zero = torch.zeros(size=(N, H, W))
         mean_drop_cam = zero
         
-        for c in range(C):
-            sub_cam = cams[:, c, :, :]
-            sub_cam_max = torch.max(sub_cam.view(N, -1), dim=-1)[0].view(N, 1, 1)
-            thr = (sub_cam_max * mu)
-            thr = thr.expand(sub_cam.shape)
-            sub_cam_with_drop = torch.where(sub_cam > thr, zero, sub_cam)
-            mean_drop_cam = mean_drop_cam + sub_cam_with_drop
+        for k in range(K):
+            fc_weight = fc_weights[k].view(1, -1, 1, 1)
+            cam = x * fc_weight
+            cam = F.relu(cam)
+            cam = torch.sum(cam, dim=1)
+            
+            cam_max = torch.max(cam.view(N, -1), dim=-1)[0].view(N, 1, 1)
+            thr = (cam_max * mu)
+            thr = thr.expand(cam.shape)
+            cam_with_drop = torch.where(cam > thr, zero, cam)
+            
+            mean_drop_cam = mean_drop_cam + cam_with_drop
         
-        mean_drop_cam = torch.unsqueeze(mean_drop_cam, dim=1)
+        mean_drop_cam = mean_drop_cam / K 
+        mean_drop_cam = mean_drop_cam.unsqueeze(dim=1)
+        
         x = x * mean_drop_cam
         
         return x
