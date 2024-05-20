@@ -38,14 +38,12 @@ class BasicClassifier(nn.Module):
             nn.Linear(in_features, num_classes)
         )                   
 
-        # PDA 
+        # Progressive Dropout Attention
         self.cnt = 0
         self.mu = 1.0 
         self.sigma = 0.985
         self.lb = 0.65
-        
-        if self.enable_PDA:
-            self.PDA = PDA()
+        self.PDA = PDA()
 
 
     def forward(self, x):
