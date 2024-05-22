@@ -5,6 +5,7 @@ Patch Classifier with Progressive Dropout Attention
 Backbone list
 - resnet50
 - resnet101
+- densenet121
 
 Backbone initializing
 - ImageNet 
