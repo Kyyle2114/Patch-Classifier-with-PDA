@@ -21,7 +21,7 @@ class PDA(nn.Module):
         K, _ = fc_weights.size()
         N, _, H, W = x.size()
         
-        zero = torch.zeros(size=(N, H, W))
+        zero = torch.zeros(size=(N, H, W)).to(x.device)
         mean_drop_cam = zero
         
         for k in range(K):
@@ -33,7 +33,7 @@ class PDA(nn.Module):
             cam_max = torch.max(cam.view(N, -1), dim=-1)[0].view(N, 1, 1)
             thr = (cam_max * mu)
             thr = thr.expand(cam.shape)
-            cam_with_drop = torch.where(cam > thr, zero, cam)
+            cam_with_drop = torch.where(cam > thr, zero, cam).to(x.device)
             
             mean_drop_cam = mean_drop_cam + cam_with_drop
         
