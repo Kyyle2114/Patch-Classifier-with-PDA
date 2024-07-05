@@ -1,6 +1,6 @@
 # Patch-Classifier-with-PDA
 
-Patch Classifier with Progressive Dropout Attention
+Patch Classifier with [Progressive Dropout Attention](https://velog.io/@kyyle/Multi-layer-pseudo-supervision-for-histopathology-tissue-semantic-segmentation-using-patch-level-classification-labels)
 
 Backbone list
 - resnet50
@@ -10,8 +10,3 @@ Backbone list
 Backbone initializing
 - ImageNet 
 - SimCLR 
-
-Issues
-- Not use Tensorboard (logging -> print)
-- MC Dropout (backbone? classifier?)
-- hyperparam for PDA (sigma, lowerbound)
